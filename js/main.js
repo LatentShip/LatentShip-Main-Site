@@ -9,6 +9,35 @@
     if (el) el.textContent = value
   }
 
+  function getProjectBySlug(slug) {
+    return data.projects.find((project) => project.slug === slug)
+  }
+
+  function getAllTags() {
+    const tags = new Set()
+    data.projects.forEach((project) => project.tags.forEach((tag) => tags.add(tag)))
+    return ["All", ...Array.from(tags)]
+  }
+
+  function buildProjectCard(project, linkPrefix) {
+    return `
+      <article class="project-card">
+        <div class="project-preview" style="background:${project.preview};"></div>
+        <div class="project-body">
+          <p class="project-meta">${project.industry}</p>
+          <h3>${project.title}</h3>
+          <p class="project-summary">${project.summary}</p>
+          <div class="project-bottom">
+            <div class="chips">
+              ${project.tags.map((tag) => `<span class="chip">${tag}</span>`).join("")}
+            </div>
+            <a class="project-link" href="${linkPrefix}${project.slug}/">View project -></a>
+          </div>
+        </div>
+      </article>
+    `
+  }
+
   function renderHero() {
     setText("hero-eyebrow", data.hero.eyebrow)
     setText("hero-title", data.hero.title)
@@ -58,69 +87,6 @@
     }
   }
 
-  function getAllTags() {
-    const tags = new Set()
-    data.projects.forEach((project) => project.tags.forEach((tag) => tags.add(tag)))
-    return ["All", ...Array.from(tags)]
-  }
-
-  function renderTagFilters() {
-    const wrap = document.getElementById("tag-filters")
-    if (!wrap) return
-    const tags = getAllTags()
-
-    wrap.innerHTML = tags
-      .map(
-        (tag) => `
-          <button
-            type="button"
-            class="tag-btn ${state.activeTag === tag ? "active" : ""}"
-            data-tag="${tag}"
-          >${tag}</button>
-        `
-      )
-      .join("")
-
-    wrap.querySelectorAll(".tag-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        state.activeTag = btn.getAttribute("data-tag") || "All"
-        renderTagFilters()
-        renderProjects()
-      })
-    })
-  }
-
-  function filteredProjects() {
-    if (state.activeTag === "All") return data.projects
-    return data.projects.filter((project) => project.tags.includes(state.activeTag))
-  }
-
-  function renderProjects() {
-    const grid = document.getElementById("project-grid")
-    if (!grid) return
-
-    grid.innerHTML = filteredProjects()
-      .map(
-        (project) => `
-          <article class="project-card">
-            <div class="project-preview" style="background:${project.preview};"></div>
-            <div class="project-body">
-              <p class="project-meta">${project.industry}</p>
-              <h3>${project.title}</h3>
-              <p class="project-summary">${project.summary}</p>
-              <div class="project-bottom">
-                <div class="chips">${project.tags
-                  .map((tag) => `<span class="chip">${tag}</span>`)
-                  .join("")}</div>
-                <span class="duration">${project.duration}</span>
-              </div>
-            </div>
-          </article>
-        `
-      )
-      .join("")
-  }
-
   function renderFaq() {
     const wrap = document.getElementById("faq-list")
     if (!wrap) return
@@ -135,6 +101,98 @@
         `
       )
       .join("")
+  }
+
+  function renderProjectGrid(containerId, linkPrefix, filtered) {
+    const grid = document.getElementById(containerId)
+    if (!grid) return
+
+    const list = filtered || data.projects
+    grid.innerHTML = list.map((project) => buildProjectCard(project, linkPrefix)).join("")
+  }
+
+  function renderWorkPage() {
+    const grid = document.getElementById("project-grid")
+    if (!grid) return
+
+    const linkPrefix = grid.dataset.projectLinkPrefix || "./"
+    const filters = document.getElementById("tag-filters")
+
+    if (filters) {
+      const tags = getAllTags()
+      filters.innerHTML = tags
+        .map(
+          (tag) => `
+            <button
+              type="button"
+              class="tag-btn ${state.activeTag === tag ? "active" : ""}"
+              data-tag="${tag}"
+            >${tag}</button>
+          `
+        )
+        .join("")
+
+      filters.querySelectorAll(".tag-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.activeTag = btn.getAttribute("data-tag") || "All"
+          renderWorkPage()
+        })
+      })
+    }
+
+    const filtered =
+      state.activeTag === "All"
+        ? data.projects
+        : data.projects.filter((project) => project.tags.includes(state.activeTag))
+    renderProjectGrid("project-grid", linkPrefix, filtered)
+  }
+
+  function renderFeaturedProjects() {
+    const grid = document.getElementById("featured-project-grid")
+    if (!grid) return
+    const linkPrefix = grid.dataset.projectLinkPrefix || "./work/"
+    const featured = data.projects.slice(0, 3)
+    renderProjectGrid("featured-project-grid", linkPrefix, featured)
+  }
+
+  function renderAboutPage() {
+    setText("about-title", data.about.title)
+    setText("about-copy", data.about.copy)
+  }
+
+  function renderProjectPage() {
+    const slug = document.body.dataset.projectSlug
+    if (!slug) return
+
+    const project = getProjectBySlug(slug)
+    if (!project) {
+      setText("project-title", "Project not found")
+      setText("project-summary", "Please return to the work page and choose a valid project.")
+      return
+    }
+
+    setText("project-industry", project.industry)
+    setText("project-title", project.title)
+    setText("project-summary", project.detail)
+    setText("project-duration", project.duration)
+
+    const preview = document.getElementById("project-preview")
+    if (preview) preview.style.background = project.preview
+
+    const chips = document.getElementById("project-tags")
+    if (chips) chips.innerHTML = project.tags.map((tag) => `<span class="chip">${tag}</span>`).join("")
+
+    const deliverables = document.getElementById("project-deliverables")
+    if (deliverables) {
+      deliverables.innerHTML = project.deliverables.map((item) => `<li>${item}</li>`).join("")
+    }
+
+    const related = document.getElementById("related-project-grid")
+    if (related) {
+      const linkPrefix = related.dataset.projectLinkPrefix || "../"
+      const relatedProjects = data.projects.filter((item) => item.slug !== slug).slice(0, 3)
+      related.innerHTML = relatedProjects.map((item) => buildProjectCard(item, linkPrefix)).join("")
+    }
   }
 
   function setupRevealAnimations() {
@@ -165,9 +223,11 @@
     renderHero()
     renderWhyUs()
     renderRoadmap()
-    renderTagFilters()
-    renderProjects()
     renderFaq()
+    renderFeaturedProjects()
+    renderWorkPage()
+    renderAboutPage()
+    renderProjectPage()
     setupRevealAnimations()
   }
 

@@ -8,7 +8,7 @@
       name="description"
       content="Boutique product and engineering team translating business needs into scoped POCs, hardened MVPs, and launch-ready products."
     />
-    <title>Latent Foundry | Product + Engineering</title>
+    <title>Latent Foundry | Home</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,21 +17,20 @@
     />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
-  <body>
+  <body data-page="home">
     <header class="site-header" id="top">
       <div class="container nav-shell">
-        <a href="#top" class="brand">
+        <a href="./" class="brand">
           <span class="brand-dot" aria-hidden="true"></span>
           <span class="brand-text">Latent Foundry</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#top">Home</a>
-          <a href="#why-us">Why us</a>
-          <a href="#roadmap">Roadmap</a>
-          <a href="#work">Work</a>
-          <a href="#faq">FAQ</a>
+          <a href="./" class="active">Home</a>
+          <a href="./about/">About Us</a>
+          <a href="./work/">Our Work</a>
+          <a href="./#faq">FAQ</a>
         </nav>
-        <a href="#contact" class="nav-cta">Get started</a>
+        <a href="./get-started/" class="nav-cta">Get started</a>
       </div>
     </header>
 
@@ -42,7 +41,7 @@
             <p class="eyebrow" id="hero-eyebrow"></p>
             <h1 id="hero-title"></h1>
             <p class="subtitle" id="hero-subtitle"></p>
-            <a href="#contact" class="primary-cta">Book a free call -></a>
+            <a href="./get-started/" class="primary-cta">Book a free call -></a>
           </div>
 
           <aside class="hero-card panel panel-dark" data-reveal>
@@ -79,15 +78,16 @@
         </div>
       </section>
 
-      <section class="section" id="work">
+      <section class="section">
         <div class="container" data-reveal>
-          <div class="section-head">
-            <p class="eyebrow">Portfolio</p>
-            <h2>Selected projects</h2>
-            <p class="lead">Filter projects by tag to view relevant examples.</p>
+          <div class="section-head inline-head">
+            <div>
+              <p class="eyebrow">Featured work</p>
+              <h2>Recent builds</h2>
+            </div>
+            <a class="text-link-cta" href="./work/">View all projects -></a>
           </div>
-          <div id="tag-filters" class="tag-filters" aria-label="Project filters"></div>
-          <div id="project-grid" class="project-grid"></div>
+          <div id="featured-project-grid" class="project-grid" data-project-link-prefix="./work/"></div>
         </div>
       </section>
 
@@ -130,7 +130,6 @@
       </div>
     </footer>
 
-    <noscript>This site uses a small amount of JavaScript for project filtering and FAQ rendering.</noscript>
     <script src="./js/content.js" defer></script>
     <script src="./js/main.js" defer></script>
   </body>

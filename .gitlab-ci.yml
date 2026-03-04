@@ -2,7 +2,7 @@ pages:
   stage: deploy
   script:
     - mkdir -p public
-    - cp -r index.html assets css js public/
+    - cp -r index.html about work get-started assets css js .nojekyll public/
   artifacts:
     paths:
       - public
