@@ -4,10 +4,37 @@
 
   const state = { activeTag: "All" }
   let faqTracked = false
+  const manifestCache = new Map()
+
+  function getSiteBaseUrl() {
+    const script =
+      document.currentScript ||
+      Array.from(document.querySelectorAll("script[src]")).find((item) =>
+        item.getAttribute("src")?.endsWith("js/main.js")
+      )
+    if (!script) return new URL("./", window.location.href)
+    const scriptUrl = new URL(script.getAttribute("src"), window.location.href)
+    return new URL("../", scriptUrl)
+  }
+
+  const siteBaseUrl = getSiteBaseUrl()
 
   function setText(id, value) {
     const el = document.getElementById(id)
-    if (el) el.textContent = value
+    if (el) el.textContent = value || ""
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+  }
+
+  function getAssetUrl(path) {
+    return new URL(path, siteBaseUrl).toString()
   }
 
   function track(eventName, payload) {
@@ -17,6 +44,8 @@
     }
   }
 
+  window.latentshipTrack = track
+
   function getProjectBySlug(slug) {
     return data.projects.find((project) => project.slug === slug)
   }
@@ -24,11 +53,44 @@
   function getAllTags() {
     const tags = new Set()
     data.projects.forEach((project) => project.tags.forEach((tag) => tags.add(tag)))
-    return ["All", ...Array.from(tags)]
+    const order = ["AI Systems", "Operational Platforms", "FinTech", "EdTech", "Coaching", "Prototype"]
+    const sorted = order.filter((tag) => tags.has(tag))
+    const remaining = Array.from(tags).filter((tag) => !order.includes(tag))
+    return ["All", ...sorted, ...remaining]
+  }
+
+  function getManifestUrl(slug) {
+    return getAssetUrl(`assets/work/${slug}/manifest.json`)
+  }
+
+  function getImageUrl(slug, imageName) {
+    return getAssetUrl(`assets/work/${slug}/${imageName}`)
+  }
+
+  async function fetchProjectImages(slug) {
+    if (!slug) return []
+    if (manifestCache.has(slug)) return manifestCache.get(slug)
+
+    const request = fetch(getManifestUrl(slug), { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) return []
+        const manifest = await res.json()
+        if (!manifest || !Array.isArray(manifest.images)) return []
+        return manifest.images.filter((name) => typeof name === "string" && name.trim())
+      })
+      .catch(() => [])
+
+    manifestCache.set(slug, request)
+    return request
   }
 
   function buildProjectCard(project, linkPrefix, options = {}) {
     const compact = Boolean(options.compact)
+    const arrowIcon = `
+      <svg class="inline-arrow-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M18,12h0a2,2,0,0,0-.59-1.4l-4.29-4.3a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42L15,11H5a1,1,0,0,0,0,2H15l-3.29,3.29a1,1,0,0,0,1.41,1.42l4.29-4.3A2,2,0,0,0,18,12Z"/>
+      </svg>
+    `
     return `
       <a
         class="project-card project-card-link ${compact ? "is-compact" : ""}"
@@ -36,7 +98,7 @@
         data-track="project_click"
         data-project="${project.slug}"
       >
-        <div class="project-preview" style="background:${project.preview};">
+        <div class="project-preview" style="background:${project.preview};" data-project-preview data-project-slug="${project.slug}">
           <p class="project-poster-line">${project.posterLine || ""}</p>
         </div>
         <div class="project-body">
@@ -60,11 +122,39 @@
             <div class="chips">
               ${project.tags.map((tag) => `<span class="chip">${tag}</span>`).join("")}
             </div>
-            <span class="project-link">Read case -></span>
+            <span class="project-link">Read case ${arrowIcon}</span>
           </div>
         </div>
       </a>
     `
+  }
+
+  function hydrateProjectCards(container) {
+    if (!container) return
+    const previews = Array.from(container.querySelectorAll("[data-project-preview][data-project-slug]"))
+    previews.forEach(async (preview) => {
+      const slug = preview.getAttribute("data-project-slug")
+      if (!slug) return
+      const images = await fetchProjectImages(slug)
+      if (!images.length) return
+      if (preview.querySelector("img")) return
+
+      const img = document.createElement("img")
+      img.className = "project-preview-image"
+      img.src = getImageUrl(slug, images[0])
+      img.alt = `${getProjectBySlug(slug)?.title || "Project"} screenshot`
+      img.loading = "lazy"
+      preview.classList.add("has-image")
+      preview.insertBefore(img, preview.firstChild)
+    })
+  }
+
+  function getInitials(name) {
+    const clean = String(name || "").trim()
+    if (!clean) return "?"
+    const parts = clean.split(/\s+/).filter(Boolean)
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase()
+    return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase()
   }
 
   function renderHero() {
@@ -191,12 +281,12 @@
 
     const list = filtered || data.projects
     grid.innerHTML = list.map((project) => buildProjectCard(project, linkPrefix, options)).join("")
+    hydrateProjectCards(grid)
   }
 
   function renderWorkPage() {
     const grid = document.getElementById("project-grid")
     if (!grid) return
-
     const linkPrefix = grid.dataset.projectLinkPrefix || "./"
     const filters = document.getElementById("tag-filters")
 
@@ -209,6 +299,7 @@
               type="button"
               class="tag-btn ${state.activeTag === tag ? "active" : ""}"
               data-tag="${tag}"
+              aria-pressed="${state.activeTag === tag ? "true" : "false"}"
             >${tag}</button>
           `
         )
@@ -234,16 +325,111 @@
     const grid = document.getElementById("featured-project-grid")
     if (!grid) return
     const linkPrefix = grid.dataset.projectLinkPrefix || "./work/"
-    const featured = data.projects.slice(0, 3)
-    renderProjectGrid("featured-project-grid", linkPrefix, featured, { compact: true })
+    renderProjectGrid("featured-project-grid", linkPrefix, data.projects.slice(0, 3), { compact: true })
   }
 
   function renderAboutPage() {
     setText("about-title", data.about.title)
     setText("about-copy", data.about.copy)
+
+    const founders = document.getElementById("founder-grid")
+    if (!founders) return
+    const people = Array.isArray(data.about?.founders) ? data.about.founders : []
+    founders.innerHTML = people
+      .map((person) => {
+        const name = person?.name || "Founder"
+        const role = person?.role || ""
+        const email = person?.email || ""
+        const blurb = person?.blurb || ""
+        return `
+          <article class="founder-card">
+            <div class="founder-avatar" aria-hidden="true">${escapeHtml(getInitials(name))}</div>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(role)}</p>
+            <p class="muted"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+            ${blurb ? `<p class="founder-blurb">${escapeHtml(blurb)}</p>` : ""}
+          </article>
+        `
+      })
+      .join("")
   }
 
-  function renderProjectPage() {
+  function renderProjectGallery(project, images) {
+    const preview = document.getElementById("project-preview")
+    const controls = document.getElementById("project-gallery-controls")
+    const thumbs = document.getElementById("project-gallery-thumbs")
+    const prevButton = document.getElementById("gallery-prev")
+    const nextButton = document.getElementById("gallery-next")
+    const status = document.getElementById("project-gallery-status")
+    if (!preview) return
+
+    if (!images.length) {
+      preview.innerHTML = ""
+      preview.style.background = project.preview
+      if (controls) controls.hidden = true
+      if (thumbs) thumbs.innerHTML = ""
+      if (status) status.textContent = "No screenshots added yet."
+      return
+    }
+
+    const urls = images.map((name) => getImageUrl(project.slug, name))
+    let index = 0
+    preview.style.background = "#0b1114"
+    preview.innerHTML = '<img class="project-gallery-image" alt="" />'
+    const img = preview.querySelector("img")
+
+    function update(nextIndex) {
+      index = (nextIndex + urls.length) % urls.length
+      if (img) {
+        img.src = urls[index]
+        img.alt = `${project.title} screenshot ${index + 1}`
+      }
+      if (status) status.textContent = `Screenshot ${index + 1} of ${urls.length}`
+      if (thumbs) {
+        thumbs.querySelectorAll(".gallery-thumb").forEach((button, buttonIndex) => {
+          const active = buttonIndex === index
+          button.classList.toggle("active", active)
+          button.setAttribute("aria-current", active ? "true" : "false")
+        })
+      }
+    }
+
+    if (controls) controls.hidden = urls.length <= 1
+    if (thumbs) {
+      thumbs.innerHTML = urls
+        .map(
+          (url, thumbIndex) => `
+            <button type="button" class="gallery-thumb" data-gallery-index="${thumbIndex}" aria-label="Show screenshot ${thumbIndex + 1}">
+              <img src="${url}" alt="${project.title} thumbnail ${thumbIndex + 1}" loading="lazy" />
+            </button>
+          `
+        )
+        .join("")
+      thumbs.querySelectorAll(".gallery-thumb").forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextIndex = Number(button.getAttribute("data-gallery-index"))
+          update(nextIndex)
+        })
+      })
+    }
+
+    if (prevButton) prevButton.onclick = () => update(index - 1)
+    if (nextButton) nextButton.onclick = () => update(index + 1)
+    preview.tabIndex = 0
+    preview.onkeydown = (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault()
+        update(index - 1)
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault()
+        update(index + 1)
+      }
+    }
+
+    update(0)
+  }
+
+  async function renderProjectPage() {
     const slug = document.body.dataset.projectSlug
     if (!slug) return
 
@@ -259,22 +445,24 @@
     setText("project-summary", project.detail)
     setText("project-duration", project.duration)
 
-    const preview = document.getElementById("project-preview")
-    if (preview) preview.style.background = project.preview
-
     const chips = document.getElementById("project-tags")
     if (chips) chips.innerHTML = project.tags.map((tag) => `<span class="chip">${tag}</span>`).join("")
 
     const deliverables = document.getElementById("project-deliverables")
     if (deliverables) {
-      deliverables.innerHTML = project.deliverables.map((item) => `<li>${item}</li>`).join("")
+      deliverables.innerHTML = (project.deliverables || []).map((item) => `<li>${item}</li>`).join("")
     }
+
+    const status = document.getElementById("project-gallery-status")
+    if (status) status.textContent = "Loading screenshots..."
+    renderProjectGallery(project, await fetchProjectImages(slug))
 
     const related = document.getElementById("related-project-grid")
     if (related) {
       const linkPrefix = related.dataset.projectLinkPrefix || "../"
       const relatedProjects = data.projects.filter((item) => item.slug !== slug).slice(0, 3)
       related.innerHTML = relatedProjects.map((item) => buildProjectCard(item, linkPrefix)).join("")
+      hydrateProjectCards(related)
     }
   }
 
@@ -343,6 +531,107 @@
     observer.observe(faq)
   }
 
+  function setupNavPill() {
+    const nav = document.querySelector(".nav-links")
+    if (!nav) return
+
+    const links = Array.from(nav.querySelectorAll("a"))
+    const activeIndex = links.findIndex((link) => link.classList.contains("active"))
+    if (!links.length || activeIndex < 0) return
+
+    const navPillKey = "latentship_nav_pill_index"
+    const pill = document.createElement("span")
+    pill.className = "nav-active-pill"
+    pill.setAttribute("aria-hidden", "true")
+    nav.prepend(pill)
+
+    function shouldEnablePill() {
+      if (window.matchMedia("(max-width: 640px)").matches) return false
+      const firstTop = links[0]?.offsetTop ?? 0
+      return links.every((link) => Math.abs(link.offsetTop - firstTop) < 2)
+    }
+
+    function positionPill(target, animated) {
+      if (!target) return
+      if (!animated) {
+        pill.style.transition = "none"
+      } else {
+        pill.style.removeProperty("transition")
+      }
+      pill.style.width = `${target.offsetWidth}px`
+      pill.style.transform = `translateX(${target.offsetLeft}px)`
+      if (!animated) {
+        requestAnimationFrame(() => {
+          pill.style.removeProperty("transition")
+        })
+      }
+    }
+
+    function enablePill() {
+      nav.classList.add("is-pill-ready")
+    }
+
+    function disablePill() {
+      nav.classList.remove("is-pill-ready")
+      pill.style.removeProperty("width")
+      pill.style.removeProperty("transform")
+    }
+
+    function readStoredIndex() {
+      try {
+        const raw = window.sessionStorage.getItem(navPillKey)
+        if (!raw) return null
+        const parsed = Number.parseInt(raw, 10)
+        if (!Number.isInteger(parsed)) return null
+        if (parsed < 0 || parsed >= links.length) return null
+        return parsed
+      } catch {
+        return null
+      }
+    }
+
+    function writeStoredIndex(index) {
+      try {
+        window.sessionStorage.setItem(navPillKey, String(index))
+      } catch {
+        // Ignore storage issues in private/restricted contexts.
+      }
+    }
+
+    function syncPill() {
+      if (!shouldEnablePill()) {
+        disablePill()
+        return
+      }
+
+      enablePill()
+      const activeLink = links[activeIndex]
+      const storedIndex = readStoredIndex()
+      const startLink =
+        storedIndex !== null && storedIndex !== activeIndex ? links[storedIndex] : activeLink
+
+      positionPill(startLink, false)
+      if (startLink !== activeLink) {
+        requestAnimationFrame(() => positionPill(activeLink, true))
+      }
+    }
+
+    links.forEach((link, index) => {
+      link.addEventListener("click", () => writeStoredIndex(index))
+    })
+
+    let resizeRaf = null
+    window.addEventListener("resize", () => {
+      if (resizeRaf) cancelAnimationFrame(resizeRaf)
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = null
+        syncPill()
+      })
+    })
+
+    syncPill()
+  }
+
   function init() {
     renderHero()
     renderSocialProof()
@@ -356,6 +645,7 @@
     setupRevealAnimations()
     setupInteractionTracking()
     setupScrollTracking()
+    setupNavPill()
   }
 
   if (document.readyState === "loading") {

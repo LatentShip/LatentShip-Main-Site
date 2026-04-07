@@ -1,260 +1,266 @@
 window.SITE_CONTENT = {
   hero: {
-    eyebrow: "Boutique product + engineering team",
-    qualifier: "For founders and product leaders building B2B SaaS and internal tools.",
-    title: "From business problem to working product, fast.",
-    subtitle: "We scope fast, build production-ready, and keep handoff clear.",
-    bullets: [
-      "Fixed-scope Proof of Concept in ~7 days",
-      "Production-ready MVP with tests, CI, and clean handoff"
-    ],
+    eyebrow: "AI-native product + engineering team",
+    qualifier: "AI-agentic workflow builders for operations-heavy teams.",
+    title: "We turn messy workflows into AI-agentic products teams actually use.",
+    subtitle:
+      "We map business friction into practical AI systems with clear UX, automation, and production-ready delivery.",
+    bullets: ["Custom AI agents, workflow automation, and maintainable handoff-ready builds."],
     cardMeta: "POC -> MVP -> Launch + Iterate",
-    cardTitle: "Fast validation first, then production build with clear next steps.",
+    cardTitle: "Scoped proof for a critical flow, then production-ready MVP delivery.",
     timeline: [
-      { label: "Week 1", text: "Proof of Concept (fixed scope)" },
-      { label: "Weeks 2+", text: "MVP build and hardening" },
-      { label: "Launch", text: "Release + iterate with data" }
+      { label: "Week 1", text: "Scoped proof for a critical workflow" },
+      { label: "Weeks 2+", text: "MVP build with production foundations" },
+      { label: "Launch", text: "Release, instrument, and iterate from usage" }
     ]
   },
   socialProof: {
-    title: "Built for operations-heavy products across:",
-    badges: ["B2B Operations", "EdTech", "FinTech", "Internal Tooling", "Coaching Platforms", "AgriTech"]
+    title: "Selected work across:",
+    badges: ["AI Systems", "Agentic Workflows", "Operational Platforms", "FinTech", "EdTech", "Internal Tools"]
   },
   whyUs: [
+    { title: "AI where it helps", detail: "We apply AI to concrete workflow bottlenecks, not generic demos." },
     {
-      title: "Business-first scope",
-      detail: "We map goals, constraints, and success criteria before writing code."
+      title: "Human-in-the-loop",
+      detail: "Critical decisions stay visible with controllable prompts, guardrails, and review points."
     },
     {
-      title: "7-day POC first",
-      detail: "A fixed-scope Proof of Concept reduces risk before larger build spend."
+      title: "Production-minded architecture",
+      detail: "We build for maintainability, observability, and clean handoff from day one."
     },
+    { title: "Fast scoped validation", detail: "A focused POC reduces risk before broader product investment." },
+    { title: "Clear ownership + handoff", detail: "You keep repos and implementation context without lock-in." },
     {
-      title: "Production-ready delivery",
-      detail: "MVPs include tests, CI, and maintainable architecture from day one."
-    },
-    {
-      title: "Budget-aligned choices",
-      detail: "Scope and deployment decisions are designed to fit your stage."
-    },
-    {
-      title: "No lock-in",
-      detail: "You own the repo, source code, and handoff documentation."
-    },
-    {
-      title: "Optional retainer",
-      detail: "Continue with us post-launch or transition to your internal team."
+      title: "Workflow-first thinking",
+      detail: "We design around real operations, then layer automation where it creates leverage."
     }
   ],
   roadmap: {
-    title: "POC first, production build next, then continuous iteration.",
+    title: "POC first, production build next, then measured iteration.",
     subtitle:
-      "We solve product problems with technical clarity, translating business priorities into scoped delivery your team can trust.",
+      "We translate ambiguous workflow problems into scoped product decisions and reliable delivery plans.",
     collaboration:
-      "Weekly demos, shared Slack channel, and clear acceptance criteria at each phase.",
-    stageNote: "Typical MVP build: 3-6 weeks (depends on scope and integrations)",
+      "Weekly demos, shared decision logs, and explicit acceptance criteria keep execution transparent.",
+    stageNote: "Typical MVP build: 3-6 weeks depending on scope and integrations",
     steps: [
       {
         phase: "Step 1",
         title: "POC in ~7 Days (Scoped)",
         timeline: "~1 week",
         detail:
-          "We define the critical flow, constraints, and success criteria, then deliver a working proof to validate direction quickly.",
-        deliverables: ["Scope doc", "Working proof", "Go/no-go recommendation"]
+          "We isolate the highest-leverage workflow, define success criteria, and ship a working proof to validate direction.",
+        deliverables: ["Scope brief", "Working flow proof", "Go/no-go recommendation"]
       },
       {
         phase: "Step 2",
-        title: "MVP Build (Hardened)",
+        title: "MVP Build (Production Baseline)",
         timeline: "Typical 3-6 weeks",
         detail:
-          "We convert validated scope into a production MVP with maintainable architecture, hardened tests, and clean handoff foundations.",
-        deliverables: ["Core product flows", "Testing + CI baseline", "Deployment-ready stack"]
+          "We harden validated scope into a launch-ready MVP with maintainable architecture, tests, and deployment readiness.",
+        deliverables: ["Core product workflows", "Testing + CI baseline", "Deployment-ready setup"]
       },
       {
         phase: "Step 3",
         title: "Launch + Iterate",
         timeline: "Ongoing",
         detail:
-          "We launch with QA and monitoring, then prioritize improvements from real usage data. Optional retainer support is available.",
-        deliverables: ["Release support", "Feedback loop", "Prioritized iteration backlog"]
+          "We launch with QA and monitoring, then prioritize iteration from real user behavior and operational feedback.",
+        deliverables: ["Release support", "Usage feedback loop", "Prioritized iteration backlog"]
       }
     ],
     trustCards: [
       {
-        label: "Low-risk POC offer",
-        heading: "POC from $0-$500",
-        copy: "For narrow validation flows, we can start with a lightweight mock-backend proof before full build."
+        label: "Validation model",
+        heading: "Scoped POC First",
+        copy: "Start narrow, validate quickly, and invest with more confidence in product direction."
       },
       {
-        label: "Collaboration model",
+        label: "Execution model",
         heading: "Clear Operating Rhythm",
-        copy: "Weekly demos, shared Slack, and tracked decisions with explicit acceptance criteria."
+        copy: "Weekly demos, async updates, and tracked decisions keep progress and tradeoffs explicit."
       },
       {
-        label: "Handoff package",
+        label: "Handoff model",
         heading: "Production Handoff",
-        copy: "Repo ownership, runbooks, architecture notes, and a practical transition plan."
+        copy: "Code ownership, runbooks, architecture notes, and practical transition support are built in."
       }
     ]
   },
   projects: [
     {
-      slug: "bilkool-ezee",
-      title: "Bilkool Ezee",
-      industry: "B2B Commerce",
-      summary:
-        "B2B procurement platform with quote workflows, approvals, and WhatsApp-led vendor coordination.",
-      detail:
-        "A procurement operations build focused on reducing lead-time across vendor requests, approvals, and order movement.",
-      whatWeDid: ["Workflow design for quote-to-order", "Approval engine and operations dashboard"],
-      outcome: "Faster quote-to-order flow with fewer manual follow-ups.",
-      posterLine: "Reduced procurement cycle friction",
-      duration: "8 weeks",
-      tags: ["B2B", "Procurement", "Operations"],
-      deliverables: [
-        "Vendor onboarding and compliance workflow",
-        "Quote-to-approval dashboard",
-        "Order and invoice automation"
-      ],
-      preview: "linear-gradient(140deg, #b5e67a 0%, #d7f2ae 46%, #0f1218 100%)"
-    },
-    {
       slug: "aaroha-academy",
       title: "Aaroha Academy",
-      industry: "EdTech",
+      industry: "AI Systems",
       summary:
-        "Learning operations platform for cohorts, mentors, and progress tracking with role-based workspaces.",
+        "AI-enabled learning and coaching platform with role-based workspaces, track management, streaming coach interactions, transcription, and privacy-aware learner support.",
       detail:
-        "A learning platform built around mentor workflows, cohort visibility, and practical reporting for operations teams.",
-      whatWeDid: ["Role-based workspaces for cohorts", "Learning ops dashboard and reporting flows"],
-      outcome: "Clearer cohort visibility and lower admin overhead for operations.",
-      posterLine: "Improved cohort visibility for operators",
+        "An education and coaching platform that combines structured learning operations with an AI coach layer, including streaming responses, transcription, image-aware context, diagnostics, and admin-level prompt control.",
+      whatWeDid: [
+        "Role-based workspaces and learning operations control planes",
+        "Streaming AI coach interactions with transcription workflows",
+        "Prompt diagnostics, privacy-aware handling, and admin tooling"
+      ],
+      outcome: "Delivered a stronger coaching experience with operational clarity for learners and admins.",
+      posterLine: "AI coach + structured learning operations",
       duration: "6 weeks",
-      tags: ["EdTech", "SaaS", "Operations"],
+      tags: ["AI Systems", "EdTech"],
       deliverables: [
-        "Multi-role learning dashboard",
-        "Cohort progress tracking",
-        "Mentor feedback workflow"
+        "Track and workspace management flows",
+        "Streaming coach layer with transcript support",
+        "Admin diagnostics and prompt control interfaces"
       ],
       preview: "linear-gradient(140deg, #0e1729 0%, #4b67a4 40%, #b5e67a 100%)"
-    },
-    {
-      slug: "deepreflekt",
-      title: "DeepReflekt",
-      industry: "Coaching",
-      summary:
-        "Leadership development experience with reflection capture, coaching loops, and insight summaries.",
-      detail:
-        "A reflection and coaching platform designed for recurring sessions, qualitative feedback, and leadership growth tracking.",
-      whatWeDid: ["Session workflow and reflection timeline", "Insight summaries for coaches and leaders"],
-      outcome: "Improved coaching continuity across sessions and stakeholders.",
-      posterLine: "Stronger coaching continuity",
-      duration: "7 weeks",
-      tags: ["Coaching", "AI", "Leadership"],
-      deliverables: [
-        "Session reflection workflow",
-        "Coaching timeline view",
-        "Insight digest summaries"
-      ],
-      preview: "linear-gradient(140deg, #101012 0%, #3a3a55 42%, #9fd957 100%)"
     },
     {
       slug: "algobullion",
       title: "AlgoBullion",
       industry: "FinTech",
       summary:
-        "Real-time market monitoring dashboard for precious metals with pricing feeds and alerting.",
+        "Real-time bullion trading and pricing platform for dealer workflows, combining live market visibility, tenant-aware pricing, and trading operations.",
       detail:
-        "A monitoring dashboard for commodity decision-makers requiring live price updates, alerts, and historical context.",
-      whatWeDid: ["Realtime pricing feed handling", "Watchlist alerts and historical comparisons"],
-      outcome: "Quicker market response decisions with centralized visibility.",
-      posterLine: "Faster response to market movement",
+        "Built for bullion wholesalers and dealers who need live pricing visibility, SKU-level rate configuration, multi-tenant controls, and a stronger digital trading workflow than legacy tools provide.",
+      whatWeDid: [
+        "Live rates ingestion with dealer-facing visibility surfaces",
+        "SKU-level pricing and tenant-aware controls",
+        "Trading operations workflows for desk and order teams"
+      ],
+      outcome: "Improved responsiveness and pricing control in high-velocity bullion workflows.",
+      posterLine: "Live pricing + trading desk control",
       duration: "5 weeks",
-      tags: ["FinTech", "Realtime", "Dashboards"],
+      tags: ["FinTech", "Operational Platforms"],
       deliverables: [
-        "Live pricing widget set",
-        "Watchlist and threshold alerts",
-        "Historical trend comparison"
+        "Dealer/trader market visibility interfaces",
+        "Rate configuration and control panels",
+        "Order and trading workflow operations"
       ],
       preview: "linear-gradient(140deg, #13211c 0%, #224d3f 45%, #a5dd63 100%)"
     },
     {
-      slug: "rewards-poc",
-      title: "Rewards POC",
-      industry: "AgriTech",
+      slug: "bilkool-ezee",
+      title: "Bilkool Ezee",
+      industry: "Operational Platforms",
       summary:
-        "Geo-aware campaign prototype for engagement and reward validation across field locations.",
+        "Procurement operations platform for branded merchandise, bringing ordering, shipment visibility, invoicing, and supplier coordination into one workflow.",
       detail:
-        "A location-aware engagement prototype validating incentives, redemption logic, and campaign controls before scale.",
-      whatWeDid: ["Geo check-in and validation logic", "Reward controls and campaign tooling"],
-      outcome: "Validated field reward mechanics before production rollout.",
-      posterLine: "Validated rewards before scale",
-      duration: "4 weeks",
-      tags: ["AgriTech", "Geo", "MVP"],
-      deliverables: [
-        "Geo check-in validation",
-        "Reward rules engine",
-        "Campaign admin controls"
+        "Built to reduce the back-and-forth across vendor requests, approvals, order tracking, and invoicing by centralizing procurement operations in one platform.",
+      whatWeDid: [
+        "Quote, approval, and order workflow orchestration",
+        "Shipment visibility and compliant invoicing operations",
+        "WhatsApp-native supplier coordination pathways"
       ],
-      preview: "linear-gradient(140deg, #101418 0%, #395a74 44%, #b4ed7a 100%)"
+      outcome: "Reduced operational back-and-forth and improved quote-to-order execution.",
+      posterLine: "Unified procurement operations workflow",
+      duration: "8 weeks",
+      tags: ["Operational Platforms"],
+      deliverables: [
+        "Self-service procurement ordering flow",
+        "Approval and order movement dashboards",
+        "Invoice and shipment visibility controls"
+      ],
+      preview: "linear-gradient(140deg, #b5e67a 0%, #d7f2ae 46%, #0f1218 100%)"
     },
     {
-      slug: "support-copilot",
-      title: "Support Copilot",
-      industry: "SaaS",
+      slug: "deepreflekt",
+      title: "DeepReflekt",
+      industry: "Coaching",
       summary:
-        "Internal support tool to triage incoming tickets and suggest response drafts for operations teams.",
+        "Leadership coaching platform centered on reflection capture, collaborative coaching workflows, and AI-assisted insight generation.",
       detail:
-        "An internal support workflow improving triage speed and response consistency for cross-functional teams.",
-      whatWeDid: ["Ticket triage queue and prioritization", "Draft assistant and support performance panel"],
-      outcome: "Reduced ticket handling time and improved response consistency.",
-      posterLine: "Reduced support handling time",
-      duration: "5 weeks",
-      tags: ["SaaS", "Automation", "AI"],
-      deliverables: [
-        "Ticket triage board",
-        "Response draft assistant",
-        "Support performance snapshot"
+        "Built to support structured leadership development through recurring reflections, coaching continuity, and insight generation across coach and leader workflows.",
+      whatWeDid: [
+        "Recurring reflection capture and coaching continuity loops",
+        "Collaborative coach-leader workflow design",
+        "AI-assisted insight and summary generation"
       ],
-      preview: "linear-gradient(140deg, #121212 0%, #555555 48%, #9fdb57 100%)"
+      outcome: "Improved continuity across coaching cycles and leadership development touchpoints.",
+      posterLine: "Reflection-led coaching continuity",
+      duration: "7 weeks",
+      tags: ["AI Systems", "Coaching"],
+      deliverables: [
+        "Reflection capture and timeline workflows",
+        "Coach collaboration experience",
+        "Insight summary surfaces for ongoing sessions"
+      ],
+      preview: "linear-gradient(140deg, #101012 0%, #3a3a55 42%, #9fd957 100%)"
+    },
+    {
+      slug: "rewards-poc",
+      title: "Rewards POC",
+      industry: "Prototype",
+      summary:
+        "Geo-aware rewards prototype for validating campaign logic, field engagement flows, and redemption controls before production rollout.",
+      detail:
+        "A lightweight prototype used to validate location-aware reward mechanics, campaign rules, and redemption workflows before scaling further.",
+      whatWeDid: [
+        "Location-aware check-in and validation logic",
+        "Campaign rules and redemption flow prototyping",
+        "Quick operator controls for field testing"
+      ],
+      outcome: "Validated campaign mechanics before committing to full production build.",
+      posterLine: "Validated location-aware reward logic",
+      duration: "4 weeks",
+      tags: ["Prototype", "Operational Platforms"],
+      deliverables: ["Geo validation prototype", "Reward logic testing tools", "Campaign control proof"],
+      preview: "linear-gradient(140deg, #101418 0%, #395a74 44%, #b4ed7a 100%)"
     }
   ],
   about: {
-    title: "Meet the team behind scoped, practical product delivery.",
+    title: "Small team. Senior execution. Practical outcomes.",
     copy:
-      "We are a small, senior team that translates business goals into product decisions and technical execution. We keep scope clear, ship in focused phases, and prioritize maintainability from day one."
+      "We turn messy workflows into AI-agentic products teams actually use. We map business friction into practical AI systems with clear UX, automation, and production-ready delivery.",
+    founders: [
+      {
+        name: "Hariharan Ragunathan",
+        role: "Product + Engineering",
+        email: "hari@latentship.com",
+        blurb:
+          ""
+      },
+      {
+        name: "Shayaz Pithawalla",
+        role: "Engineering + Architecture",
+        email: "shayaz@latentship.com",
+        blurb: "I build AI-forward products focused on creative automation, agentic workflows, and open cloud infrastructure."
+      }
+    ]
+  },
+  leadForm: {
+    endpoint: "https://YOUR-SERVER-ENDPOINT/api/send-intake",
+    method: "POST",
+    provider: "resend",
+    source: "latentship-site"
   },
   faq: [
     {
-      question: "What do I get?",
+      question: "What do I get first?",
       bullets: [
-        "A fixed-scope Proof of Concept (~7 days)",
-        "An MVP plan with scope, timeline, and technical approach",
-        "Launch + iteration support with documented handoff"
+        "A scoped intake and problem framing conversation",
+        "A focused POC plan for the highest-leverage workflow",
+        "A clear recommendation on whether to move into MVP build"
       ]
     },
     {
       question: "How does pricing work?",
       bullets: [
-        "POC is fixed scope and fixed fee",
-        "MVP is estimated from validated requirements",
-        "Scope changes are explicit and approved before implementation"
+        "POC is fixed scope with explicit success criteria",
+        "MVP is estimated after validation and technical scoping",
+        "Scope changes are documented before implementation"
       ]
     },
     {
-      question: "Do I keep the code?",
+      question: "Do we keep the code and architecture?",
       bullets: [
-        "Yes, you own the source code and repository",
-        "You keep architecture notes and handoff docs",
-        "You can continue with us or your internal team"
+        "Yes. You own the source code and repository",
+        "We provide architecture notes and handoff context",
+        "You can continue with us or with your internal team"
       ]
     },
     {
-      question: "What happens after POC?",
+      question: "Do you support AI-heavy workflows?",
       bullets: [
-        "We review what was validated and what changed",
-        "We lock MVP scope and implementation plan",
-        "We move into build with weekly demos and clear acceptance criteria"
+        "Yes, when AI materially improves the workflow",
+        "We prioritize controllability, diagnostics, and human review points",
+        "We avoid over-automating critical decisions without safeguards"
       ]
     },
     {
@@ -262,11 +268,11 @@ window.SITE_CONTENT = {
       bullets: ["Yes, we can sign NDAs before discovery and scope review."]
     },
     {
-      question: "What does the 7-day POC include?",
+      question: "How fast can we start?",
       bullets: [
-        "One critical user flow implemented end-to-end",
-        "Working prototype + technical recommendation",
-        "Clear next-step plan for production MVP"
+        "Intake responses are typically reviewed within 1 business day",
+        "POC kickoff timing depends on scope clarity and active capacity",
+        "We share a concrete timeline before implementation starts"
       ]
     }
   ]
