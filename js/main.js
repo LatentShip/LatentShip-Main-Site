@@ -361,19 +361,44 @@
     const prevButton = document.getElementById("gallery-prev")
     const nextButton = document.getElementById("gallery-next")
     const status = document.getElementById("project-gallery-status")
+    let gestureHint = document.getElementById("project-gallery-gesture")
+
+    if (!gestureHint && preview?.parentElement) {
+      gestureHint = document.createElement("p")
+      gestureHint.id = "project-gallery-gesture"
+      gestureHint.className = "gallery-gesture-hint"
+      gestureHint.textContent = "Tip: swipe the image to browse screenshots."
+      if (thumbs) {
+        preview.parentElement.insertBefore(gestureHint, thumbs)
+      } else if (status) {
+        preview.parentElement.insertBefore(gestureHint, status)
+      } else {
+        preview.parentElement.appendChild(gestureHint)
+      }
+    }
+
     if (!preview) return
 
     if (!images.length) {
       preview.innerHTML = ""
       preview.style.background = project.preview
+      preview.classList.remove("is-swipeable")
+      preview.ontouchstart = null
+      preview.ontouchend = null
+      preview.ontouchcancel = null
       if (controls) controls.hidden = true
       if (thumbs) thumbs.innerHTML = ""
+      if (gestureHint) gestureHint.hidden = true
       if (status) status.textContent = "No screenshots added yet."
       return
     }
 
     const urls = images.map((name) => getImageUrl(project.slug, name))
     let index = 0
+    const canSwipeGallery =
+      urls.length > 1 &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches
     preview.style.background = "#0b1114"
     preview.innerHTML = '<img class="project-gallery-image" alt="" />'
     const img = preview.querySelector("img")
@@ -395,6 +420,8 @@
     }
 
     if (controls) controls.hidden = urls.length <= 1
+    if (gestureHint) gestureHint.hidden = !canSwipeGallery
+    preview.classList.toggle("is-swipeable", canSwipeGallery)
     if (thumbs) {
       thumbs.innerHTML = urls
         .map(
@@ -423,6 +450,49 @@
       } else if (event.key === "ArrowRight") {
         event.preventDefault()
         update(index + 1)
+      }
+    }
+
+    preview.ontouchstart = null
+    preview.ontouchend = null
+    preview.ontouchcancel = null
+
+    if (canSwipeGallery) {
+      let startX = 0
+      let startY = 0
+      let trackingSwipe = false
+
+      preview.ontouchstart = (event) => {
+        const touch = event.changedTouches?.[0]
+        if (!touch) return
+        startX = touch.clientX
+        startY = touch.clientY
+        trackingSwipe = true
+      }
+
+      preview.ontouchend = (event) => {
+        if (!trackingSwipe) return
+        trackingSwipe = false
+        const touch = event.changedTouches?.[0]
+        if (!touch) return
+
+        const deltaX = touch.clientX - startX
+        const deltaY = touch.clientY - startY
+        const absX = Math.abs(deltaX)
+        const absY = Math.abs(deltaY)
+        if (absX < 48 || absX < absY * 1.2) return
+
+        if (deltaX > 0) {
+          update(index - 1)
+        } else {
+          update(index + 1)
+        }
+
+        if (gestureHint) gestureHint.hidden = true
+      }
+
+      preview.ontouchcancel = () => {
+        trackingSwipe = false
       }
     }
 
@@ -484,7 +554,7 @@
           }
         })
       },
-      { threshold: 0.15 }
+      { threshold: 0.06, rootMargin: "0px 0px -6% 0px" }
     )
 
     elements.forEach((el) => observer.observe(el))
@@ -632,6 +702,69 @@
     syncPill()
   }
 
+  function normalizePath(pathname) {
+    const clean = String(pathname || "").trim()
+    if (!clean) return "/"
+    return clean.endsWith("/") ? clean : `${clean}/`
+  }
+
+  function setupMobileHeaderBehavior() {
+    const header = document.querySelector(".site-header")
+    const navCta = header?.querySelector(".nav-cta")
+    if (!header || !navCta) return
+
+    const currentPath = normalizePath(window.location.pathname)
+    const ctaPath = normalizePath(new URL(navCta.getAttribute("href") || "", window.location.href).pathname)
+    const shouldRenderBottomCta = ctaPath !== currentPath
+
+    let bottomCta = null
+    if (shouldRenderBottomCta) {
+      bottomCta = document.createElement("div")
+      bottomCta.className = "mobile-sticky-cta"
+      bottomCta.innerHTML = `
+        <a href="${navCta.getAttribute("href") || "#"}" class="nav-cta mobile-sticky-cta-link" data-track="cta_primary">
+          ${navCta.textContent?.trim() || "Book a 15-min scoping call"}
+        </a>
+      `
+      document.body.appendChild(bottomCta)
+    }
+
+    function isMobileMode() {
+      if (typeof window.matchMedia !== "function") return false
+      return (
+        window.matchMedia("(max-width: 640px)").matches &&
+        window.matchMedia("(hover: none) and (pointer: coarse)").matches
+      )
+    }
+
+    let isTicking = false
+    function syncMobileHeaderState() {
+      isTicking = false
+
+      if (!isMobileMode()) {
+        document.body.classList.remove("mobile-header-collapsed")
+        if (bottomCta) bottomCta.classList.remove("is-visible")
+        return
+      }
+
+      const offset = window.scrollY || window.pageYOffset || 0
+      const shouldCollapse = offset > 88
+      document.body.classList.toggle("mobile-header-collapsed", shouldCollapse)
+      if (bottomCta) bottomCta.classList.toggle("is-visible", shouldCollapse)
+    }
+
+    function requestSync() {
+      if (isTicking) return
+      isTicking = true
+      window.requestAnimationFrame(syncMobileHeaderState)
+    }
+
+    window.addEventListener("scroll", requestSync, { passive: true })
+    window.addEventListener("resize", requestSync)
+    window.addEventListener("orientationchange", requestSync)
+    requestSync()
+  }
+
   function init() {
     renderHero()
     renderSocialProof()
@@ -646,6 +779,7 @@
     setupInteractionTracking()
     setupScrollTracking()
     setupNavPill()
+    setupMobileHeaderBehavior()
   }
 
   if (document.readyState === "loading") {
