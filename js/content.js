@@ -11,7 +11,7 @@ window.SITE_CONTENT = {
     timeline: [
       { label: "Week 1", text: "Scoped proof for a critical workflow" },
       { label: "Weeks 2+", text: "MVP build with production foundations" },
-      { label: "Launch", text: "Release, instrument, and iterate from usage" }
+      { label: "Launch", text: "Release, instrument, and iterate from usage" } // launch label
     ]
   },
   socialProof: {
