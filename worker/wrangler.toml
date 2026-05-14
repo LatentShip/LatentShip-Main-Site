@@ -5,3 +5,7 @@ compatibility_date = "2024-01-01"
 routes = [
   { pattern = "api.latentship.com", custom_domain = true }
 ]
+
+[vars]
+ALLOWED_ORIGINS = "https://latentship.com,https://www.latentship.com,https://latentship.github.io,http://localhost:8080,http://127.0.0.1:8080"
+TURNSTILE_ALLOWED_HOSTNAMES = "latentship.com,www.latentship.com,latentship.github.io,localhost,127.0.0.1"

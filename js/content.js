@@ -228,7 +228,9 @@ window.SITE_CONTENT = {
     endpoint: "https://api.latentship.com",
     method: "POST",
     provider: "resend",
-    source: "latentship-site"
+    source: "latentship-site",
+    turnstileSiteKey: "0x4AAAAAADO9Pzc1GtX8YPo3",
+    turnstileAction: "lead_intake_submit"
   },
   faq: [
     {
@@ -277,3 +279,5 @@ window.SITE_CONTENT = {
     }
   ]
 }
+
+

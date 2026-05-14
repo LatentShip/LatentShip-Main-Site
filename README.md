@@ -116,3 +116,29 @@ When adding a new project:
 - This is vanilla HTML/CSS/JS only.
 - Navigation is true multi-page (not single-page anchors for About/Work/Get Started).
 - Push the full repo root contents (all pages + `assets/`, `css/`, `js/`, and `.github/workflows/deploy-pages.yml`).
+
+## Lead Intake API + Captcha
+
+The intake flow on `/get-started/` now requires a Cloudflare Turnstile token and strict server-side payload validation.
+
+1. In `js/content.js`, set:
+   - `leadForm.turnstileSiteKey` to your Turnstile site key.
+2. In the Worker (`worker/`), configure secrets:
+
+   ```bash
+   wrangler secret put TURNSTILE_SECRET_KEY
+   wrangler secret put RESEND_API_KEY
+   wrangler secret put LEAD_FORWARD_TO
+   ```
+
+3. Optional Worker vars (comma-separated):
+   - `ALLOWED_ORIGINS`
+   - `TURNSTILE_ALLOWED_HOSTNAMES`
+
+4. Deploy worker:
+
+   ```bash
+   wrangler deploy
+   ```
+
+Rejected spam/invalid submissions are logged in Worker logs with reason, IP, and origin, so you can monitor abuse patterns.
