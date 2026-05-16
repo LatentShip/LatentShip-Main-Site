@@ -202,6 +202,31 @@ window.SITE_CONTENT = {
       tags: ["AgriTech", "Operational Platforms"],
       deliverables: ["Rewards and loyalty campaign", "QR redemption and validation flows", "Campaign operations tooling"],
       preview: "linear-gradient(140deg, #101418 0%, #395a74 44%, #b4ed7a 100%)"
+    },
+    {
+      slug: "mcp-development",
+      title: "MCP Development",
+      industry: "AI Systems",
+      summary:
+        "Custom MCP servers that connect approved internal data, tools, and actions to ChatGPT, Codex, or internal agent workflows.",
+      detail:
+        "A capability example for teams that want AI assistants to work with internal systems safely. We define the approved data sources, tool permissions, guardrails, and action paths so assistants can query dashboards, generate reports, and execute controlled workflow actions.",
+      whatWeDid: [
+        "Map internal data sources and admin workflows into approved MCP tools",
+        "Add auth, routing, guardrails, and audit logging around tool access",
+        "Connect reporting and safe actions to ChatGPT, Codex, or internal agents"
+      ],
+      outcome:
+        "Teams get a controlled way to use business data in AI workflows without exposing raw systems broadly.",
+      posterLine: "Secure MCP layer for AI-assisted operations",
+      duration: "Scoped by systems and actions",
+      tags: ["AI Systems", "Operational Platforms", "Internal Tools"],
+      deliverables: [
+        "Custom MCP server design and implementation",
+        "Admin dashboard snapshots and usage reporting tools",
+        "Safe action execution with permissions and audit logs"
+      ],
+      preview: "linear-gradient(140deg, #101b15 0%, #294936 45%, #b1e17b 100%)"
     }
   ],
   about: {

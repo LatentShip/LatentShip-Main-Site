@@ -53,7 +53,7 @@
   function getAllTags() {
     const tags = new Set()
     data.projects.forEach((project) => project.tags.forEach((tag) => tags.add(tag)))
-    const order = ["AI Systems", "Operational Platforms", "FinTech", "EdTech", "Coaching", "Prototype"]
+    const order = ["AI Systems", "Operational Platforms", "Internal Tools", "FinTech", "EdTech", "Coaching", "Prototype"]
     const sorted = order.filter((tag) => tags.has(tag))
     const remaining = Array.from(tags).filter((tag) => !order.includes(tag))
     return ["All", ...sorted, ...remaining]

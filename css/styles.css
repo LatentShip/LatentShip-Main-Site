@@ -1810,6 +1810,112 @@ textarea:disabled,
   font-size: var(--text-sm);
 }
 
+/* MCP Capability section */
+.mcp-panel {
+  padding: var(--space-8);
+}
+
+.mcp-content {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: var(--space-8);
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.mcp-eyebrow {
+  color: #b1e17b;
+}
+
+.mcp-copy h2 {
+  margin-top: var(--space-3);
+  font-size: clamp(30px, 3.4vw, 46px);
+  max-width: 12ch;
+}
+
+.mcp-lead {
+  margin-top: var(--space-4);
+  color: #d4dfd1;
+  max-width: 52ch;
+}
+
+.mcp-features {
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.mcp-features li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.mcp-feature-icon {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(177, 225, 123, 0.34);
+  border-radius: 50%;
+  background: rgba(177, 225, 123, 0.1);
+  color: #b1e17b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 800;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.mcp-features strong {
+  display: block;
+  color: #f0f5ed;
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+.mcp-features span {
+  color: #c4d5be;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.mcp-actions {
+  margin-top: var(--space-6);
+}
+
+.mcp-cta {
+  background: #f6faf3;
+  color: #0f1914;
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(144, 203, 83, 0.18);
+}
+
+.mcp-cta:hover {
+  background: #eaf5dc;
+  color: #0a120d;
+}
+
+.mcp-diagram-wrap {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(144, 203, 83, 0.24);
+  background: #fbfdf9;
+  padding: var(--space-2);
+  box-shadow: 0 8px 32px rgba(144, 203, 83, 0.08);
+}
+
+.mcp-diagram-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(14px);
@@ -1845,6 +1951,7 @@ textarea:disabled,
   }
 
   .hero-grid,
+  .mcp-content,
   .roadmap-grid,
   .trust-grid,
   .project-detail-grid,
@@ -1863,6 +1970,7 @@ textarea:disabled,
 
   .hero-copy,
   .hero-card,
+  .mcp-panel,
   .why-panel,
   .faq-shell,
   .page-shell,
@@ -1870,6 +1978,10 @@ textarea:disabled,
   .footer-cta,
   .footer-grid {
     padding: var(--space-6);
+  }
+
+  .mcp-copy h2 {
+    max-width: 18ch;
   }
 }
 
@@ -1996,6 +2108,15 @@ textarea:disabled,
 
   .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mcp-diagram-wrap {
+    overflow-x: auto;
+    padding: 6px;
+  }
+
+  .mcp-diagram-img {
+    min-width: 680px;
   }
 
   .nav-links a,
