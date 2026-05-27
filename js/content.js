@@ -229,24 +229,130 @@ window.SITE_CONTENT = {
       preview: "linear-gradient(140deg, #101b15 0%, #294936 45%, #b1e17b 100%)"
     }
   ],
-  about: {
-    title: "Small team. Senior execution. Practical outcomes.",
-    copy:
-      "We turn messy workflows into AI-agentic products teams actually use. We map business friction into practical AI systems with clear UX, automation, and production-ready delivery.",
-    founders: [
+  soulDoc: {
+    repo: "latentship/soul",
+    branch: "main",
+    tabs: [
       {
-        name: "Hariharan Ragunathan", 
-        role: "Product + Engineering",
-        email: "hari@latentship.com",
-        blurb:
-          "I build products by deeply understanding customer problems and translating them into simple, useful, and impactful experiences"
+        id: "soul",
+        filename: "soul.md",
+        body: `# soul.md
+
+> Get the AI advantage without becoming an AI company.
+
+LatentShip is an AI-native product and engineering studio. We build agentic workflows, operational platforms, MCP integrations, and launch-ready systems for teams who want to ship faster, smarter, and own what they build.
+
+---
+
+## 01 · what you get
+
+The AI-native product (or workflow) your team actually uses.
+
+Not a demo. Not a slide. **A working system** that turns the bottleneck you keep losing time on into the thing your team relies on every day.
+
+## 02 · how you know it works
+
+You see it running in 7 days.
+
+Every engagement starts with a 7-day **proof of concept** (POC). By day 7 you hold something real. If the POC misses, we part ways early and you've saved months of the wrong build.
+
+You only pay against **milestones**, never a huge sum upfront, never an ambiguous hourly bill. You see progress, then you pay.
+
+## 03 · how fast
+
+Week 1 proof. Weeks 2 to 8 launch.
+
+\`POC -> MVP -> Launch + Iterate\`. The roadmap is the contract. Weekly demos. Shared decision logs. No black box. No surprise invoice.
+
+## 04 · what you have to do
+
+**Hand us the problem. We handle the rest.**
+
+Source code ownership stays with you from the first commit. No rebuild later.
+
+---
+
+## what we ship
+
+- **agentic workflows** - multi-step AI pipelines that do real work, not just demo.
+- **MCP integrations** - secure connectors between your data, your tools, and approved AI assistants.
+- **operational platforms** - internal dashboards and ops tools your team actually lives in.
+- **mobile launches** - React Native deployments when you need a phone app fast.
+- **magic moments** - Teams, WhatsApp, Slack extensions that show up exactly where your customer already is.
+
+---
+
+## how we partner
+
+**Your launch date, not ours.** If you're shipping to market, we sync to your launch. If you're rolling out internally, we sync to your team.
+
+**Human judgment, not just AI output.** Anyone can build with AI now. The hard part is *what* to build, *what* to cut, and what order to ship in, plus the three things every pure-AI codebase quietly skips: **security, testing, and performance**. We bake all three into every product. Real product and engineering judgment from people who have shipped production software before, not a freelancer writing prompts and hoping it boots.
+
+**Source code yours from day one.** You own the repo from the first commit. Stay with us on an optional retainer if you want us to keep shipping features and maintaining the system, hand it off to your team, or both. Your call.
+
+---
+
+## start_here
+
+One 15-minute scoping call. NDA-friendly. You leave with a clear yes, no, or here is what we would do in week one.
+
+[book a scoping call →](../get-started/)
+
+Response within 1 business day.
+`
       },
       {
-        name: "Shayaz Pithawalla",
-        role: "Engineering + Architecture",
-        email: "shayaz@latentship.com",
-        blurb: "I build AI-forward products focused on creative automation, agentic workflows, and open cloud infrastructure."
+        id: "team",
+        filename: "team.md",
+        body: `# team.md
+
+> Founder-led. Specialist-backed.
+
+We're a founder-led team of specialists. Founders lead every build directly, and we scale in trusted contributors across mobile, data, and infrastructure when a project calls for it.
+
+---
+
+## founders
+
+### Hariharan Ragunathan
+
+Product + Engineering · \`hari@latentship.com\`
+
+> I build products by deeply understanding customer problems and translating them into simple, useful, and impactful experiences.
+
+### Shayaz Pithawalla
+
+Engineering + Architecture · \`shayaz@latentship.com\`
+
+> I build AI-forward products focused on creative automation, agentic workflows, and open cloud infrastructure.
+
+---
+
+## extended_bench
+
+When a project asks for it, we bring in vetted specialists from our network.
+
+- mobile
+- backend
+- data
+- devops
+- design
+- qa
+
+---
+
+## how_we_work
+
+\`POC -> MVP -> Launch + Iterate\`. Weekly demos. Shared decision logs. Milestone-based billing. Source code yours from the first commit.
+
+[book a scoping call →](../get-started/)
+`
       }
+    ],
+    samples: [
+      { filename: "proof-of-concept.md", note: "sample · what you'll get in week 1" },
+      { filename: "milestones.md", note: "sample · your payment schedule, week by week" },
+      { filename: "decisions.md", note: "sample · the shared decision log we keep with you" }
     ]
   },
   leadForm: {

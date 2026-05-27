@@ -328,30 +328,260 @@
     renderProjectGrid("featured-project-grid", linkPrefix, data.projects.slice(0, 3), { compact: true })
   }
 
-  function renderAboutPage() {
-    setText("about-title", data.about.title)
-    setText("about-copy", data.about.copy)
+  function renderInlineMarkdown(raw) {
+    let s = escapeHtml(raw)
+    s = s.replace(/`([^`]+)`/g, '<code class="md-code">$1</code>')
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a class="md-link" href="$2">$1</a>')
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong class="md-bold">$1</strong>')
+    s = s.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em class="md-em">$2</em>')
+    return s
+  }
 
-    const founders = document.getElementById("founder-grid")
-    if (!founders) return
-    const people = Array.isArray(data.about?.founders) ? data.about.founders : []
-    founders.innerHTML = people
-      .map((person) => {
-        const name = person?.name || "Founder"
-        const role = person?.role || ""
-        const email = person?.email || ""
-        const blurb = person?.blurb || ""
-        return `
-          <article class="founder-card">
-            <div class="founder-avatar" aria-hidden="true">${escapeHtml(getInitials(name))}</div>
-            <h3>${escapeHtml(name)}</h3>
-            <p>${escapeHtml(role)}</p>
-            <p class="muted"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
-            ${blurb ? `<p class="founder-blurb">${escapeHtml(blurb)}</p>` : ""}
-          </article>
-        `
+  function renderMarkdownLines(text) {
+    const lines = String(text || "").split("\n")
+    const gutterWidth = String(lines.length).length
+    return lines
+      .map((rawLine, idx) => {
+        const num = idx + 1
+        const gutter = `<span class="md-ln" style="min-width:${gutterWidth + 1}ch;">${num}</span>`
+        const trimmed = rawLine.replace(/\s+$/, "")
+
+        if (trimmed === "") {
+          return `<div class="md-line md-blank">${gutter}<span class="md-content">&nbsp;</span></div>`
+        }
+        if (/^---+$/.test(trimmed)) {
+          return `<div class="md-line md-hr">${gutter}<span class="md-syntax">${escapeHtml(trimmed)}</span></div>`
+        }
+        let m
+        if ((m = trimmed.match(/^(#{1,3})\s+(.+)$/))) {
+          const level = m[1].length
+          return `<div class="md-line md-h md-h${level}">${gutter}<span class="md-syntax">${m[1]}&nbsp;</span><span class="md-content">${renderInlineMarkdown(m[2])}</span></div>`
+        }
+        if ((m = trimmed.match(/^>\s?(.*)$/))) {
+          return `<div class="md-line md-bq">${gutter}<span class="md-syntax">&gt;&nbsp;</span><span class="md-content">${renderInlineMarkdown(m[1])}</span></div>`
+        }
+        if ((m = trimmed.match(/^[-*]\s+(.+)$/))) {
+          return `<div class="md-line md-li">${gutter}<span class="md-syntax">-&nbsp;</span><span class="md-content">${renderInlineMarkdown(m[1])}</span></div>`
+        }
+        return `<div class="md-line md-p">${gutter}<span class="md-content">${renderInlineMarkdown(trimmed)}</span></div>`
       })
       .join("")
+  }
+
+  function fileIcon() {
+    return `<svg class="ide-file-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M3 1.5A1.5 1.5 0 0 1 4.5 0h5L13 3.5v11a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 14.5v-13Zm6.5.25v2.75h2.75L9.5 1.75Z"/></svg>`
+  }
+
+  function sampleIcon() {
+    return `<svg class="ide-file-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2.5 2A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2h-11ZM4 5h8v1H4V5Zm0 2.5h8v1H4v-1ZM4 10h5v1H4v-1Z"/></svg>`
+  }
+
+  function sourceIcon() {
+    return `<svg class="ide-mode-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M5.7 4.3 1.4 8l4.3 3.7 1-1.2L3.4 8l3.3-2.5-1-1.2Zm4.6 0-1 1.2L12.6 8l-3.3 2.5 1 1.2L14.6 8l-4.3-3.7Z"/></svg>`
+  }
+
+  function previewIcon() {
+    return `<svg class="ide-mode-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 3C4.5 3 1.7 5.4 1 8c.7 2.6 3.5 5 7 5s6.3-2.4 7-5c-.7-2.6-3.5-5-7-5Zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6Zm0-5.3a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>`
+  }
+
+  function renderMarkdownRich(text) {
+    const lines = String(text || "").split("\n")
+    const out = []
+    let inList = false
+    function closeList() {
+      if (inList) {
+        out.push("</ul>")
+        inList = false
+      }
+    }
+    lines.forEach((rawLine) => {
+      const line = rawLine.replace(/\s+$/, "")
+      if (line === "") {
+        closeList()
+        return
+      }
+      if (/^---+$/.test(line)) {
+        closeList()
+        out.push('<hr class="md-rich-hr">')
+        return
+      }
+      let m
+      if ((m = line.match(/^(#{1,3})\s+(.+)$/))) {
+        closeList()
+        const lvl = m[1].length
+        out.push(`<h${lvl} class="md-rich-h${lvl}">${renderInlineMarkdown(m[2])}</h${lvl}>`)
+        return
+      }
+      if ((m = line.match(/^>\s?(.*)$/))) {
+        closeList()
+        out.push(`<blockquote class="md-rich-bq">${renderInlineMarkdown(m[1])}</blockquote>`)
+        return
+      }
+      if ((m = line.match(/^[-*]\s+(.+)$/))) {
+        if (!inList) {
+          out.push('<ul class="md-rich-ul">')
+          inList = true
+        }
+        out.push(`<li>${renderInlineMarkdown(m[1])}</li>`)
+        return
+      }
+      closeList()
+      out.push(`<p class="md-rich-p">${renderInlineMarkdown(line)}</p>`)
+    })
+    closeList()
+    return out.join("")
+  }
+
+  function renderSoulDoc() {
+    if (document.body.dataset.page !== "about") return
+    const doc = data.soulDoc
+    if (!doc || !Array.isArray(doc.tabs) || !doc.tabs.length) return
+
+    const tabs = doc.tabs
+    const samples = Array.isArray(doc.samples) ? doc.samples : []
+    let activeId = tabs[0].id
+    let mode = "source"
+
+    const tabbar = document.getElementById("ide-tabbar")
+    const viewport = document.getElementById("ide-viewport")
+    const tree = document.getElementById("ide-tree")
+    const path = document.getElementById("ide-path")
+    const branchEl = document.getElementById("ide-branch")
+    const statusBranch = document.getElementById("ide-status-branch")
+    const cursor = document.getElementById("ide-cursor")
+    const modeChip = document.getElementById("ide-mode-chip")
+
+    if (branchEl) branchEl.textContent = `${doc.repo || ""} · ${doc.branch || "main"}`
+    if (statusBranch) statusBranch.textContent = doc.branch || "main"
+
+    function renderTabbar() {
+      if (!tabbar) return
+      const tabsHtml = tabs
+        .map(
+          (tab) => `
+            <button type="button" class="ide-tab ${tab.id === activeId ? "is-active" : ""}" role="tab" aria-selected="${tab.id === activeId}" data-tab="${tab.id}">
+              ${fileIcon()}<span>${escapeHtml(tab.filename)}</span>
+            </button>
+          `
+        )
+        .join("")
+      tabbar.innerHTML = `
+        <div class="ide-tabbar-tabs">${tabsHtml}</div>
+        <div class="ide-mode-toggle" role="group" aria-label="View mode">
+          <button type="button" class="ide-mode-btn ${mode === "source" ? "is-active" : ""}" data-mode="source" aria-pressed="${mode === "source"}">${sourceIcon()}<span>Source</span></button>
+          <button type="button" class="ide-mode-btn ${mode === "preview" ? "is-active" : ""}" data-mode="preview" aria-pressed="${mode === "preview"}">${previewIcon()}<span>Preview</span></button>
+        </div>
+      `
+      tabbar.querySelectorAll(".ide-tab").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-tab")
+          if (id) selectTab(id)
+        })
+      })
+      tabbar.querySelectorAll(".ide-mode-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const next = btn.getAttribute("data-mode")
+          if (next) setMode(next)
+        })
+      })
+    }
+
+    function renderTree() {
+      if (!tree) return
+      const fileItems = tabs
+        .map(
+          (tab) => `
+            <li class="ide-tree-file ${tab.id === activeId ? "is-active" : ""}" data-tab="${tab.id}">
+              ${fileIcon()}<span>${escapeHtml(tab.filename)}</span>
+            </li>
+          `
+        )
+        .join("")
+      const sampleItems = samples
+        .map(
+          (f) => `
+            <li class="ide-tree-file is-sample" title="${escapeHtml(f.note || "sample artifact")}">
+              ${sampleIcon()}<span>${escapeHtml(f.filename)}</span>
+              <span class="ide-tree-tag">sample</span>
+            </li>
+          `
+        )
+        .join("")
+      tree.innerHTML = `
+        <li class="ide-tree-folder">
+          <span class="ide-tree-twist">▾</span><span>${escapeHtml(doc.repo || "latentship")}</span>
+        </li>
+        ${fileItems}
+        ${
+          samples.length
+            ? `
+              <li class="ide-tree-folder ide-tree-folder-sub">
+                <span class="ide-tree-twist">▾</span><span>engagement</span>
+              </li>
+              ${sampleItems}
+            `
+            : ""
+        }
+      `
+      tree.querySelectorAll(".ide-tree-file[data-tab]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.getAttribute("data-tab")
+          if (id) selectTab(id)
+        })
+      })
+    }
+
+    function renderViewport() {
+      if (!viewport) return
+      const tab = tabs.find((t) => t.id === activeId) || tabs[0]
+      const lineCount = String(tab.body || "").split("\n").length
+      if (mode === "preview") {
+        viewport.innerHTML = `<div class="md-doc md-rich">${renderMarkdownRich(tab.body)}</div>`
+      } else {
+        viewport.innerHTML = `<div class="md-doc">${renderMarkdownLines(tab.body)}</div>`
+      }
+      if (path) path.textContent = `~/${doc.repo || "latentship"}/${tab.filename}`
+      if (cursor) {
+        cursor.textContent = mode === "preview" ? "" : `Ln ${lineCount}, Col 1`
+        cursor.style.display = mode === "preview" ? "none" : ""
+      }
+      if (modeChip) modeChip.textContent = mode === "preview" ? "Preview" : "Markdown"
+      viewport.scrollTop = 0
+    }
+
+    function selectTab(id) {
+      if (id === activeId) return
+      activeId = id
+      renderTabbar()
+      renderTree()
+      renderViewport()
+      track("soul_tab_open", { tab: id, mode })
+    }
+
+    function setMode(next) {
+      if (next === mode) return
+      mode = next
+      renderTabbar()
+      renderViewport()
+      track("soul_mode_switch", { mode })
+    }
+
+    renderTabbar()
+    renderTree()
+    renderViewport()
+
+    document.addEventListener("keydown", (event) => {
+      if (document.body.dataset.page !== "about") return
+      const target = event.target
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return
+      if (event.key === "t" || event.key === "T") {
+        const idx = tabs.findIndex((t) => t.id === activeId)
+        const next = tabs[(idx + 1) % tabs.length]
+        if (next) selectTab(next.id)
+      } else if (event.key === "p" || event.key === "P") {
+        setMode(mode === "source" ? "preview" : "source")
+      }
+    })
   }
 
   function renderProjectGallery(project, images) {
@@ -773,7 +1003,7 @@
     renderFaq()
     renderFeaturedProjects()
     renderWorkPage()
-    renderAboutPage()
+    renderSoulDoc()
     renderProjectPage()
     setupRevealAnimations()
     setupInteractionTracking()

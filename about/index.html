@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="About LatentShip, an AI-native product and engineering team building practical operational software."
+      content="soul.md — LatentShip's value, partnership philosophy, and team. Rendered as the file itself."
     />
-    <title>LatentShip | About Us</title>
+    <title>LatentShip | soul.md</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/styles.css" />
@@ -34,13 +34,38 @@
     </header>
 
     <main>
-      <section class="section">
-        <div class="container panel page-shell" data-reveal>
-          <p class="eyebrow">About us</p>
-          <h1 id="about-title"></h1>
-          <p class="lead" id="about-copy"></p>
+      <section class="section section-tight soul-section">
+        <div class="container">
+          <div class="soul-editor" data-reveal>
+            <div class="ide-titlebar">
+              <span class="ide-dot dot-red" aria-hidden="true"></span>
+              <span class="ide-dot dot-amber" aria-hidden="true"></span>
+              <span class="ide-dot dot-green" aria-hidden="true"></span>
+              <span class="ide-path" id="ide-path"></span>
+              <span class="ide-spacer"></span>
+              <span class="ide-branch" id="ide-branch"></span>
+            </div>
+            <div class="ide-tabbar" id="ide-tabbar" role="tablist" aria-label="Files"></div>
+            <div class="ide-body">
+              <aside class="ide-sidebar" aria-label="Explorer">
+                <p class="ide-sidebar-label">Explorer</p>
+                <ul class="ide-tree" id="ide-tree"></ul>
+              </aside>
+              <div class="ide-viewport" id="ide-viewport"></div>
+            </div>
+            <div class="ide-statusbar">
+              <span class="ide-status-chip"><span class="ide-status-dot"></span><span id="ide-status-branch"></span></span>
+              <span class="ide-status-chip">UTF-8</span>
+              <span class="ide-status-chip" id="ide-mode-chip">Markdown</span>
+              <span class="ide-status-chip ide-cursor" id="ide-cursor">Ln 1, Col 1</span>
+              <span class="ide-status-spacer"></span>
+              <a href="../get-started/" class="ide-status-cta" data-track="cta_primary">Book a 15-min scoping call →</a>
+            </div>
+          </div>
 
-          <div id="founder-grid" class="founder-grid"></div>
+          <p class="soul-hint">
+            Press <kbd>T</kbd> to switch tabs, <kbd>P</kbd> to toggle preview. These are our core beliefs — the same docs we hand new hires.
+          </p>
         </div>
       </section>
     </main>
@@ -66,5 +91,3 @@
     <script src="../js/main.js" defer></script>
   </body>
 </html>
-
-
